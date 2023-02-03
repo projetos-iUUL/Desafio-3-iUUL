@@ -37,8 +37,6 @@ namespace Agenda_Consultorio_Odontologico.controller.appointmentControllers
                 appointment.End = end; 
                 appointment.Date = date; 
                 appointment.Patient = pa;
-                Console.WriteLine($"ID do paciente: {patient.Id}"); 
-                Console.WriteLine($"ID do Appointment.pacient: {appointment.Patient.Id }" );
                 context.Appointments.Add(appointment);
                 context.SaveChanges();
                 ari.SuccessMessage();
