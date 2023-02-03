@@ -22,7 +22,7 @@ namespace Agenda_Consultorio_Odontologico.view.appointmentInterface
             string time = appointment.Time.ToString();
             string name = appointment.Patient.Name;
             string birth = appointment.Patient.BirthDate.ToString("dd/MM/yyyy");
-            Console.WriteLine(date.PadLeft(7)+start.PadLeft(7)+end.PadLeft(7)+time.PadLeft(5)+" min  "+name.PadRight(15)+birth);
+            Console.WriteLine(date.PadLeft(7) + start.PadLeft(7) + end.PadLeft(7) + time.PadLeft(5) + " min  " + name.PadRight(15) + birth);
         }
         public void Footer()
         {

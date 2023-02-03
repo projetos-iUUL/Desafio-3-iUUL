@@ -77,12 +77,14 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
         }
         public void CPFAlreadyInTheListValidate(long outputCPF)
         {
-            int count = Patient.PatientList.Count;
+            using var context = new ConsultorioContext();
+            var patients = context.Patients.ToList();
+            int count = patients.Count;
             if (count > 0)
             {
                 for (int i = 0; i < count; i++)
                 {
-                    Patient patient = Patient.PatientList[i];
+                    Patient patient = patients[i];
                     if (patient.CPF == outputCPF)
                     {
                         pri.ErrorMessages(3);
@@ -95,10 +97,10 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
                     }
                 }
             }
-            else 
+            else
             {
                 cpf = outputCPF;
-            }                      
+            }
         }
         public void BirthDateValidate()
         {
@@ -111,7 +113,11 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
                 if (timeInterval.Duration > fourteenYears)
                 {
                     birthDate = outputDate;
-                    Patient patient = new(name, cpf, birthDate);
+                    using var context = new ConsultorioContext();
+                    Patient patient = new();
+                    patient.Name = name; patient.CPF = cpf; patient.BirthDate = birthDate;
+                    context.Patients.Add(patient);
+                    context.SaveChanges();
                     pri.SuccessMessage();
                 }
                 else

@@ -14,7 +14,7 @@ namespace Agenda_Consultorio_Odontologico.controller.appointmentController
         }
         public void RemoveAppointment()
         {
-            adc.DeletePatient();
+            adc.DeleteAppointment();
         }
         public void PrintFullAppointmentList()
         {

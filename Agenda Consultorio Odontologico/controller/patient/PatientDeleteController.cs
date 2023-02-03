@@ -13,9 +13,11 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
             bool parseSuccess = long.TryParse(pdi.InputCPF, out long outputCPF);
             if (parseSuccess)
             {
-                for (int i = 0; i < Patient.PatientList.Count; i++)
+                using var context = new ConsultorioContext();
+                var patients = context.Patients.ToList();
+                for (int i = 0; i < patients.Count; i++)
                 {
-                    Patient patient = Patient.PatientList[i];
+                    Patient patient = patients[i];
                     if (patient.CPF == outputCPF)
                     {
                         list.Add(patient);
@@ -38,9 +40,11 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
         public void CheckAppointments(Patient patient)
         {
             List<Appointment> list = new();
-            for (int i = 0; i < Appointment.AppointmentList.Count; i++)
+            using var context = new ConsultorioContext();
+            var appointments = context.Appointments.ToList();
+            for (int i = 0; i < appointments.Count; i++)
             {
-                Appointment appointment = Appointment.AppointmentList[i];
+                Appointment appointment = appointments[i];
                 if (appointment.Patient == patient)
                 {
                     list.Add(appointment);
@@ -55,7 +59,8 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
             }
             else
             {
-                Patient.PatientList.Remove(patient);
+                context.Patients.Remove(patient);
+                context.SaveChanges();
                 pdi.SuccessMessage();
             }
         }
@@ -63,8 +68,10 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
         {
             if(appointment.Date < DateTime.Today) 
             {
-                Appointment.AppointmentList.Remove(appointment);
-                Patient.PatientList.Remove(patient);
+                using var context = new ConsultorioContext();
+                context.Appointments.Remove(appointment);
+                context.Patients.Remove(patient);
+                context.SaveChanges();
                 pdi.SuccessMessage();
             }
             else pdi.ErrorMessages(2);

@@ -1,20 +1,21 @@
-﻿namespace Agenda_Consultorio_Odontologico.model
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Agenda_Consultorio_Odontologico.model
 {
     public class Patient
     {
-        private static List<Patient> _patientsList = new();
+        public int Id { get; internal set; }
+        [Required]
         public string Name { get; set; }
+        [Required]
         public long CPF { get; set; }
-        public int Age;
+        [Required]
         public DateTime BirthDate { get; set; }
-        public static List<Patient> PatientList { get { return _patientsList; } set { _patientsList = value; } }
-        public Patient(string name, long cpf, DateTime birthDate)
+        public virtual List<Appointment> Appointments { get; set; }  
+        public int Age;
+        public Patient()
         {
-            Name = name;
-            CPF = cpf;
-            BirthDate = birthDate;
             Age = DateTime.Today.Year - BirthDate.Year;
-            _patientsList.Add(this);
         }       
     }
 }

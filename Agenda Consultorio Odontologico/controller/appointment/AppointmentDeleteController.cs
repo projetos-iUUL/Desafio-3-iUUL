@@ -10,7 +10,7 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
         AppointmentDeleteInterface adi = new();
         Appointment? appointment;
         bool hasConflit = false;
-        public void DeletePatient()
+        public void DeleteAppointment()
         {
             adi.GetInformation();
             CheckDate();        
@@ -18,7 +18,9 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
             CheckAppointmentDateAndHour();
             if (!hasConflit)
             {
-                Appointment.AppointmentList.Remove(appointment);
+                using var context = new ConsultorioContext();
+                context.Appointments.Remove(appointment);
+                context.SaveChanges();
                 adi.SuccessMessage();
             }
         }
@@ -63,12 +65,14 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
             bool parseSuccess = long.TryParse(adi.InputCPF, out long outputCPF);
             if (parseSuccess)
             {
-                for (int i = 0; i < Appointment.AppointmentList.Count; i++)
+                using var context = new ConsultorioContext();
+                var appointments = context.Appointments.ToList();
+                for (int i = 0; i < appointments.Count; i++)
                 {
-                    Appointment a = Appointment.AppointmentList[i];
-                    if (a.Patient.CPF.Equals(outputCPF))
+                    Appointment appointment = appointments[i];
+                    if (appointment.Patient.CPF.Equals(outputCPF))
                     {
-                        list.Add(a);
+                        list.Add(appointment);
                     }
                 }
                 if (list.Count == 0)
@@ -84,9 +88,11 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
             List<Appointment> list = new();
             if (parseSuccess)
             {
-                for (int i = 0; i < Appointment.AppointmentList.Count; i++)
+                using var context = new ConsultorioContext();
+                var appointments = context.Appointments.ToList();
+                for (int i = 0; i < appointments.Count; i++)
                 {
-                    Appointment a = Appointment.AppointmentList[i];
+                    Appointment a = appointments[i];
                     if (a.Date.Day == outputDate.Day)
                     {
                         if (a.Start.ToString("0000") == adi.InputStart)
@@ -97,11 +103,11 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
                     }
                 }
                 if (list.Count == 0)
-                {
-                    adi.ErrorMessages(4);
-                    hasConflit = true;
-                }
-            }                
+                    {
+                        adi.ErrorMessages(4);
+                        hasConflit = true;
+                    }    
+            }
         }
     }
 }

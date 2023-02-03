@@ -21,7 +21,9 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
         {
             pli.Title();
             pli.Header();
-            foreach (Patient patient in Patient.PatientList.OrderBy(x => x.CPF))
+            using var context = new ConsultorioContext();
+            var patients = context.Patients.ToList();
+            foreach (Patient patient in patients.OrderBy(x => x.CPF))
             {
                 pli.ShowPatientsList(patient);
             }
@@ -31,7 +33,9 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
         {
             pli.Title();
             pli.Header();
-            foreach (Patient patient in Patient.PatientList.OrderBy(x=>x.Name))
+            using var context = new ConsultorioContext();
+            var patients = context.Patients.ToList();
+            foreach (Patient patient in patients.OrderBy(x => x.Name))
             {
                 pli.ShowPatientsList(patient);
             }
