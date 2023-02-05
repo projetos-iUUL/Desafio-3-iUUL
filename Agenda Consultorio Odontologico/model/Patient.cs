@@ -16,6 +16,8 @@ namespace Agenda_Consultorio_Odontologico.model
         public Patient()
         {
             Age = DateTime.Today.Year - BirthDate.Year;
-        }       
+        }
+        
+        // Apenas testando se o repo está certo
     }
 }
