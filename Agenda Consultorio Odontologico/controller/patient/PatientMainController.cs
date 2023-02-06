@@ -5,42 +5,49 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
 {
     public class PatientMainController
     {
-        PatientValidatorController pvc = new();
-        PatientListInterface pli = new();
-        PatientDeleteController pdc = new();
-        
+        public PatientMainController() { }
+
         public void AddPatient()
         {
-            pvc.PatientValidator();
+            PatientValidatorController patientValidatorController = new();
+            patientValidatorController.PatientValidator();
         }
         public void RemovePatient()
         {
-            pdc.DeletePatient();                  
+            DeletePatientController deletePatientController = new();
+            deletePatientController.DeletePatient();
         }
+
         public void PrintPatientsListByCPF()
         {
-            pli.Title();
-            pli.Header();
+            PatientsPrint patientsPrint = new();
+            patientsPrint.Header();
+
             using var context = new ConsultorioContext();
             var patients = context.Patients.ToList();
+
             foreach (Patient patient in patients.OrderBy(x => x.CPF))
             {
-                pli.ShowPatientsList(patient);
+                patientsPrint.ShowPatientsList(patient);
             }
-            pli.Footer();
+
+            patientsPrint.Footer();
         }
         public void PrintPatientsListByName()
         {
-            pli.Title();
-            pli.Header();
+            PatientsPrint patientsPrint = new();
+            patientsPrint.Header();
+
             using var context = new ConsultorioContext();
             var patients = context.Patients.ToList();
+
             foreach (Patient patient in patients.OrderBy(x => x.Name))
             {
-                pli.ShowPatientsList(patient);
+                patientsPrint.ShowPatientsList(patient);
             }
-            pli.Footer();
+
+            patientsPrint.Footer();
         }
-        
+
     }
 }

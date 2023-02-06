@@ -2,10 +2,10 @@
 
 namespace Agenda_Consultorio_Odontologico.controller.appointment
 {
-    public class AppointmentListMenuController
+    public class AppointmentsMenuController
     {
-        AppointmentListMenuInterface almi = new();
-        AppointmentListController alc = new();
+        AppointmentsMenu almi = new();
+        AppointmentsController alc = new();
         public void OpenInterface()
         {            
             almi.AppointmentListMenu();

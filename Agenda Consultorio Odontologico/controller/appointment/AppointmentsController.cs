@@ -4,10 +4,10 @@ using Agenda_Consultorio_Odontologico.view.appointmentInterface;
 
 namespace Agenda_Consultorio_Odontologico.controller.appointment
 {
-    public class AppointmentListController
+    public class AppointmentsController
     {
-        AppointmentListInterface ali = new();
-        AppointmentListMenuInterface almi = new();
+        AppointmentsPrint ali = new();
+        AppointmentsMenu almi = new();
         DateTime start;
         DateTime end;
         bool hasConflit = false;

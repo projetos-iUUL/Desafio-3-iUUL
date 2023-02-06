@@ -2,17 +2,14 @@
 
 namespace Agenda_Consultorio_Odontologico.view.patientInterface
 {
-    public class PatientListInterface
+    public class PatientsPrint
     {
-        public void Title()
-        {
-            Console.WriteLine("Lista de paciente \n");
-        }
         public void Header()
         {
-            Console.WriteLine("-----------------------------------------------------------------");
-            Console.WriteLine("CPF          Nome                       Dt.Nasc.     Idade     ID");
-            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("Lista de paciente");
+            Console.WriteLine("----------------------------------------------------------");
+            Console.WriteLine("CPF          Nome                       Dt.Nasc.     Idade");
+            Console.WriteLine("----------------------------------------------------------");
         }
         public void ShowPatientsList(Patient patient)
         {
@@ -22,8 +19,7 @@ namespace Agenda_Consultorio_Odontologico.view.patientInterface
             string name = patient.Name;
             string birth = patient.BirthDate.ToString("dd/MM/yyyy");
             string age = patient.Age.ToString();
-            string id = patient.Id.ToString();
-            Console.WriteLine(cpf.PadRight(13) + name.PadRight(27) + birth + age.PadLeft(7) + id.PadLeft(7));
+            Console.WriteLine(cpf.PadRight(13) + name.PadRight(27) + birth + age.PadLeft(6));
             foreach (Appointment appointment in appointments)
             {
                 if (appointment.Patient == patient && appointment.Date >= DateTime.Today)
@@ -38,7 +34,7 @@ namespace Agenda_Consultorio_Odontologico.view.patientInterface
         }
         public void Footer()
         {
-            Console.WriteLine("-----------------------------------------------------------------");
+            Console.WriteLine("----------------------------------------------------------");
         }
     }
 }

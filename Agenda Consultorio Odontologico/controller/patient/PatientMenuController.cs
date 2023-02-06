@@ -1,54 +1,56 @@
-﻿using Agenda_Consultorio_Odontologico.view.patientInterface;
+﻿using Agenda_Consultorio_Odontologico.view;
+using Agenda_Consultorio_Odontologico.view.patientInterface;
 
 namespace Agenda_Consultorio_Odontologico.controller.patientControllers
 {
     public class PatientMenuController
     {
-        PatientMenuInterface pmi = new();
-        PatientMainController prc = new();
-        public void OpenInterface()
+        public void Menu()
         {
-            pmi.PatientMenu();
-            Options();
+            PatientMenu patientMenu = new();
+            patientMenu.Menu();
+            Options(patientMenu);
         }
-        public void Options()
+        private void Options(PatientMenu patientMenu)
         {
-            MainMenuController m = new();
-            string inputOption = pmi.InputOption;
-            bool parseSuccess = int.TryParse(inputOption, out int value);
+            PatientMainController patientMainController = new();
+            MainMenuController mainMenuController = new();
+
+            bool parseSuccess = int.TryParse(patientMenu.InputOption, out int value);
+
             if (parseSuccess)
             {
                 switch (value)
                 {
                     case 1:
-                        prc.AddPatient();
-                        m.OpenInterface();
+                        patientMainController.AddPatient();
+                        mainMenuController.OpenMenu();
                         break;
                     case 2:
-                        prc.RemovePatient();
-                        m.OpenInterface();
+                        patientMainController.RemovePatient();
+                        mainMenuController.OpenMenu();
                         break;
                     case 3:
-                        prc.PrintPatientsListByCPF();
-                        m.OpenInterface();
+                        patientMainController.PrintPatientsListByCPF();
+                        mainMenuController.OpenMenu();
                         break;
                     case 4:
-                        prc.PrintPatientsListByName();
-                        m.OpenInterface();
+                        patientMainController.PrintPatientsListByName();
+                        mainMenuController.OpenMenu();
                         break;
                     case 5:
-                        m.OpenInterface();
+                        mainMenuController.OpenMenu();
                         break;
                     default:
-                        pmi.ErrorMessage();
-                        pmi.PatientMenu();
+                        MainMenuView.InvalidOptionMessage();
+                        patientMenu.Menu();
                         break;
                 }
             }
             else
             {
-                pmi.ErrorMessage();
-                pmi.PatientMenu();
+                MainMenuView.InvalidOptionMessage();
+                patientMenu.Menu();
             }
 
         }

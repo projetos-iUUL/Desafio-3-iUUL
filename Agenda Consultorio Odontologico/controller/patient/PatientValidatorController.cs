@@ -6,133 +6,130 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
 {
     public class PatientValidatorController
     {
-        PatientRegistrationInterface pri = new();
+        private bool IsValid { get; set; }
 
-        string name;
-        long cpf;
-        DateTime birthDate;
+        public PatientValidatorController()
+        {
+            IsValid = false;
+        }
+
+
         public void PatientValidator()
         {
-            pri.GetName();
-            pri.GetCPF();
-            pri.GetDate(); 
+            PatientForm pri = new();
+            pri.Form();
+
             pri.ShowData();
-            NameValidate();
-            CPFValidate(); 
-            BirthDateValidate();
-        }
-        public void NameValidate()
-        {
-            switch (pri.InputName.Length)
+
+            while (!IsValid)
             {
-                case 0:
+                pri.GetName();
+                IsValid = IsName(pri.InputName);
+                if (!IsValid)
+                {
                     pri.ErrorMessages(0);
-                    pri.GetName();
-                    NameValidate();
-                    break;
-                case < 5:
-                    pri.ErrorMessages(1);
-                    pri.GetName();
-                    NameValidate();
-                    break;
-                case >= 5:
-                    name = pri.InputName;
-                    break;
+                }
             }
-        }
-        public void CPFValidate()
-        {
-            switch (pri.InputCPF.Length) 
+            IsValid = false;
+
+            while (!IsValid)
             {
-                case 11:
-                    bool parseSuccess = long.TryParse(pri.InputCPF, out long outputCPF);
-                    if (parseSuccess)
-                    {
-                        CPFValidateAllSameNumber(outputCPF);
-                    }
-                    else
-                    {
-                        pri.ErrorMessages(2);
-                        pri.GetCPF();
-                        CPFValidate();
-                    }
-                    break;
-                default:
-                    pri.ErrorMessages(2);
-                    pri.GetCPF();
-                    CPFValidate();
-                    break;
-            }
-        }
-        public void CPFValidateAllSameNumber(long outputCPF) 
-        {
-            long[] list = { 11111111111, 22222222222, 33333333333, 44444444444, 55555555555, 66666666666, 77777777777, 88888888888, 99999999999 };
-            if(list.Contains(outputCPF))
-            {
-                pri.ErrorMessages(2);
                 pri.GetCPF();
-                CPFValidate();
-            }                          
-            else CPFAlreadyInTheListValidate(outputCPF);
-        }
-        public void CPFAlreadyInTheListValidate(long outputCPF)
-        {
-            using var context = new ConsultorioContext();
-            var patients = context.Patients.ToList();
-            int count = patients.Count;
-            if (count > 0)
-            {
-                for (int i = 0; i < count; i++)
+                IsValid = IsCPF(pri.InputCPF);
+                if (!IsValid)
                 {
-                    Patient patient = patients[i];
-                    if (patient.CPF == outputCPF)
-                    {
-                        pri.ErrorMessages(3);
-                        pri.GetCPF();
-                        CPFValidate();
-                    }
-                    else
-                    {
-                        cpf = outputCPF;
-                    }
+                    pri.ErrorMessages(1);
                 }
             }
-            else
+            IsValid = false;
+
+            while (!IsValid)
             {
-                cpf = outputCPF;
-            }
-        }
-        public void BirthDateValidate()
-        {
-            DateTime now = DateTime.Now;
-            TimeSpan fourteenYears = new TimeSpan(4748, 0, 0, 0);
-            bool parseSuccess = DateTime.TryParse(pri.InputDate, out DateTime outputDate);
-            if (parseSuccess)
-            {
-                TimeIntervalController timeInterval = new(outputDate, now);
-                if (timeInterval.Duration > fourteenYears)
+                pri.GetCPF();
+                IsValid = IsCPFAlreadyExistent(pri.InputCPF);
+                if (!IsValid)
                 {
-                    birthDate = outputDate;
-                    using var context = new ConsultorioContext();
-                    Patient patient = new();
-                    patient.Name = name; patient.CPF = cpf; patient.BirthDate = birthDate;
-                    context.Patients.Add(patient);
-                    context.SaveChanges();
-                    pri.SuccessMessage();
-                }
-                else
-                {
-                    pri.ErrorMessages(4);
-                    pri.GetDate();
-                    BirthDateValidate();
+                    pri.ErrorMessages(2);
                 }
             }
-            else
+            IsValid = false;
+
+            while (!IsValid)
             {
-                pri.ErrorMessages(5);
                 pri.GetDate();
-                BirthDateValidate();
+                IsValid = IsBirthDate(pri.InputDate);
+                if (!IsValid)
+                {
+                    pri.ErrorMessages(3);
+                }
             }
+            IsValid = false;
+
+            pri.SuccessMessage();
+        }
+
+
+
+
+        /************************************
+         * MÉTODOS DE VALIDAÇÃO DE ENTRADAS *
+         ***********************************/
+        // Nome
+        private bool IsName(string name)
+        {
+            return name.Length < 5;
+        }
+        // CPF
+        // Fonte: https://macoratti.net/11/09/c_val1.htm
+        private bool IsCPF(string cpf)
+        {
+            if (!long.TryParse(cpf, out long cpfLong))
+                return false;
+            else
+                cpf = cpfLong.ToString();
+
+            int[] multiplicador1 = new int[9] { 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            int[] multiplicador2 = new int[10] { 11, 10, 9, 8, 7, 6, 5, 4, 3, 2 };
+            string tempCpf;
+            string digito;
+            int soma;
+            int resto;
+            cpf = cpf.Trim();
+            cpf = cpf.Replace(".", "").Replace("-", "");
+            if (cpf.Length != 11)
+                return false;
+            tempCpf = cpf.Substring(0, 9);
+            soma = 0;
+
+            for (int i = 0; i < 9; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador1[i];
+            resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito = resto.ToString();
+            tempCpf += digito;
+            soma = 0;
+            for (int i = 0; i < 10; i++)
+                soma += int.Parse(tempCpf[i].ToString()) * multiplicador2[i];
+            resto = soma % 11;
+            if (resto < 2)
+                resto = 0;
+            else
+                resto = 11 - resto;
+            digito += resto.ToString();
+            return cpf.EndsWith(digito);
+        }
+        // CPF existente
+        private bool IsCPFAlreadyExistent(string cpf)
+        {
+            //...
+        }
+        // Data de Nascimento
+        private bool IsBirthDate(string birthDate)
+        {
+            //...
         }
     }
 }

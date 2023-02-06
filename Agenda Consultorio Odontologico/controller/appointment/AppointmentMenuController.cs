@@ -1,53 +1,54 @@
-﻿using Agenda_Consultorio_Odontologico.view.appointmentInterface;
+﻿using Agenda_Consultorio_Odontologico.view;
+using Agenda_Consultorio_Odontologico.view.appointmentInterface;
 
 namespace Agenda_Consultorio_Odontologico.controller.appointmentController
 {
     public class AppointmentMenuController
     {
-        AppointmentMenuInterface ami = new();
-        AppointmentMainController amc = new();
-        public void OpenInterface()
+        public void Menu()
         {
-            ami.AppointmentMenu();
-            Options();
+            AppointmentMenu appointmentMenu = new();
+            appointmentMenu.Menu();
+            Options(appointmentMenu);
         }
 
-        public void Options()
+        private void Options(AppointmentMenu appointmentMenu)
         {
-            MainMenuController m = new();
-            string inputOption = ami.InputOption;
+            AppointmentController appointmentMainController = new();
+            MainMenuController mainMenuController = new();
+
+            string inputOption = appointmentMenu.InputOption;
             bool parseSuccess = int.TryParse(inputOption, out int value);
             if (parseSuccess)
             {
                 switch (value)
                 {
                     case 1:
-                        amc.AddAppointment();
-                        m.OpenInterface();
+                        appointmentMainController.CreateAppointment();
+                        mainMenuController.OpenMenu();
                         break;
                     case 2:
-                        amc.RemoveAppointment();    
-                        m.OpenInterface();
+                        appointmentMainController.RemoveAppointment();
+                        mainMenuController.OpenMenu();
                         break;
                     case 3:
-                        amc.PrintFullAppointmentList();
-                        m.OpenInterface();
+                        appointmentMainController.PrintSchedule();
+                        mainMenuController.OpenMenu();
                         break;
                     case 4:
-                        m.OpenInterface();
+                        mainMenuController.OpenMenu();
                         break;
                     default:
-                        ami.ErrorMessage();
-                        ami.AppointmentMenu();
+                        MainMenuView.InvalidOptionMessage();
+                        appointmentMenu.Menu();
                         break;
                 }
             }
             else
             {
-                ami.ErrorMessage();
-                ami.AppointmentMenu();
+                MainMenuView.InvalidOptionMessage();
+                appointmentMenu.Menu();
             }
-
         }
     }
 }
