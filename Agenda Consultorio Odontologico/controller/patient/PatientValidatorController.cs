@@ -124,12 +124,12 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
         // CPF existente
         private bool IsCPFAlreadyExistent(string cpf)
         {
-            //...
+            return true;//...
         }
         // Data de Nascimento
         private bool IsBirthDate(string birthDate)
         {
-            //...
+            return true;//...
         }
     }
 }

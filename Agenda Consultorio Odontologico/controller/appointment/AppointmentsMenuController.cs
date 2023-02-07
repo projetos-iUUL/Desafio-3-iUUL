@@ -4,43 +4,46 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
 {
     public class AppointmentsMenuController
     {
-        AppointmentsMenu almi = new();
-        AppointmentsController alc = new();
-        public void OpenInterface()
-        {            
-            almi.AppointmentListMenu();
-            Options();
-        }
+        public AppointmentsMenuController() { }
 
-        public void Options()
+
+        public void OpenInterface()
         {
-            MainMenuController m = new();
-            string inputOption = almi.InputOption;
-            bool parseSuccess = int.TryParse(inputOption, out int value);
+            AppointmentsMenu appointmentsMenu = new();
+            appointmentsMenu.Menu();
+            Options(appointmentsMenu);
+        }
+        private void Options(AppointmentsMenu appointmentsMenu)
+        {
+            AppointmentsController appointmentsController = new();
+            MainMenuController mainMenuController = new();
+
+            bool parseSuccess = int.TryParse(appointmentsMenu.InputOption, out int value);
+
             if (parseSuccess)
             {
                 switch (value)
                 {
                     case 1:
-                        alc.PrintFullAppointmentList();
-                        m.OpenInterface();
+                        appointmentsController.PrintSchedule();
+                        mainMenuController.OpenMenu();
                         break;
                     case 2:
-                        alc.PrintAppointmentListByPeriod();
-                        m.OpenInterface();
+                        appointmentsController.PrintScheduleByPeriod();
+                        mainMenuController.OpenMenu();
                         break;
                     default:
-                        almi.ErrorMessages(0);
-                        almi.AppointmentListMenu();
+                        appointmentsMenu.ErrorMessages(0);
+                        appointmentsMenu.Menu();
                         break;
                 }
             }
             else
             {
-                almi.ErrorMessages(0);
-                almi.AppointmentListMenu();
+                appointmentsMenu.ErrorMessages(0);
+                appointmentsMenu.Menu();
             }
-
         }
+
     }
 }
