@@ -1,9 +1,9 @@
 ﻿using Agenda_Consultorio_Odontologico.model;
 using Microsoft.EntityFrameworkCore;
 
-namespace Agenda_Consultorio_Odontologico
+namespace Agenda_Consultorio_Odontologico.data
 {
-    internal class ConsultorioContext : DbContext 
+    internal class ConsultorioContext : DbContext
     {
         public DbSet<Patient> Patients { get; set; }
         public DbSet<Appointment> Appointments { get; set; }
@@ -17,7 +17,7 @@ namespace Agenda_Consultorio_Odontologico
             builder.Entity<Appointment>()
                 .HasOne(appointment => appointment.Patient)
                 .WithMany(patient => patient.Appointments)
-                .HasForeignKey(appointment => appointment.PatientId);           
+                .HasForeignKey(appointment => appointment.PatientId);
         }
     }
 }
