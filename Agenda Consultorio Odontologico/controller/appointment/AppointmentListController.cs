@@ -15,12 +15,7 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
         {
             ali.Title();
             ali.Header();
-            using var context = new ConsultorioContext();
-            var appointments = context.Appointments.ToList();
-            foreach (Appointment appointment in appointments.OrderBy(x => x.Date))
-            {
-                ali.ShowAppointmentsList(appointment);
-            }
+            ali.ShowAppointmentsList();
             ali.Footer();
         }
         public void PrintAppointmentListByPeriod()
@@ -32,15 +27,7 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
             {
                 ali.Title();
                 ali.Header();
-                using var context = new ConsultorioContext();
-                var appointments = context.Appointments.ToList();
-                foreach (Appointment appointment in appointments.OrderBy(x => x.Date))
-                {
-                    if (appointment.Date >= start && appointment.Date <= end)
-                    {
-                        ali.ShowAppointmentsList(appointment); 
-                    }
-                }
+                ali.ShowAppointmentsListByPeriod(start, end);
                 ali.Footer();
             }
         }
