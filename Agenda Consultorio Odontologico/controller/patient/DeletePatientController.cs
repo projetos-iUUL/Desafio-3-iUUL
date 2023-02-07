@@ -1,4 +1,5 @@
-﻿using Agenda_Consultorio_Odontologico.model;
+﻿using Agenda_Consultorio_Odontologico.data;
+using Agenda_Consultorio_Odontologico.model;
 using Agenda_Consultorio_Odontologico.view.patientInterface;
 
 namespace Agenda_Consultorio_Odontologico.controller.patientControllers
