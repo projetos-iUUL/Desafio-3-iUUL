@@ -1,4 +1,5 @@
-﻿using Agenda_Consultorio_Odontologico.model;
+﻿using Agenda_Consultorio_Odontologico.data;
+using Agenda_Consultorio_Odontologico.model;
 using Agenda_Consultorio_Odontologico.view.appointment;
 using Agenda_Consultorio_Odontologico.view.appointmentInterface;
 
@@ -19,7 +20,22 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
         {
             ali.Title();
             ali.Header();
-            ali.ShowAppointmentsList();
+            using var context = new ConsultorioContext();
+            var query = from app in context.Appointments
+                        join pac in context.Patients
+                        on app.PatientId equals pac.Id
+                        orderby app.Date
+                        select new { app, pac };
+            foreach (var item in query)
+            {
+                string date = item.app.Date.ToString("dd/MM/yyyy");
+                string itemStart = item.app.Start.ToString("0000");
+                string itemEnd = item.app.End.ToString("0000");
+                string time = item.app.Time.ToString();
+                string name = item.app.Patient.Name;
+                string birth = item.app.Patient.BirthDate.ToString("dd/MM/yyyy");
+                ali.ShowAppointmentsList(date, itemStart, itemEnd, time, name, birth);                
+            }
             ali.Footer();
         }
         public void PrintScheduleByPeriod()
@@ -31,7 +47,23 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
             {
                 ali.Title();
                 ali.Header();
-                ali.ShowAppointmentsListByPeriod(start, end);
+                using var context = new ConsultorioContext();
+                var query = from app in context.Appointments
+                            join pac in context.Patients
+                            on app.PatientId equals pac.Id
+                            where app.Date >= start && app.Date >= end
+                            orderby app.Date
+                            select new { app, pac };
+                foreach (var item in query)
+                {
+                    string date = item.app.Date.ToString("dd/MM/yyyy");
+                    string start = item.app.Start.ToString("0000");
+                    string end = item.app.End.ToString("0000");
+                    string time = item.app.Time.ToString();
+                    string name = item.app.Patient.Name;
+                    string birth = item.app.Patient.BirthDate.ToString("dd/MM/yyyy");
+                    ali.ShowAppointmentsList(date, start, end, time, name, birth);
+                }
                 ali.Footer();
             }
         }
