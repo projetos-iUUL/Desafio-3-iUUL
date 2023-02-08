@@ -5,12 +5,9 @@ namespace Agenda_Consultorio_Odontologico.view.appointmentInterface
 {
     public class AppointmentsPrint
     {
-        public void Title()
-        {
-            Console.WriteLine("Lista de agendamentos \n");
-        }
         public void Header()
         {
+            Console.WriteLine("Lista de agendamentos \n");
             Console.WriteLine("---------------------------------------------------------------");
             Console.WriteLine("   Data      H.Ini  H.Fim  Tempo   Nome             Dt.Nac     ");
             Console.WriteLine("---------------------------------------------------------------");

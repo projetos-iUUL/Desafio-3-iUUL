@@ -8,7 +8,7 @@
         public DeletePatientForm() { }
 
 
-        public void GetInformation()
+        public void Form()
         {
             Console.WriteLine("Insira o CPF do paciente que deseja remover: ");
             InputCPF = Console.ReadLine();

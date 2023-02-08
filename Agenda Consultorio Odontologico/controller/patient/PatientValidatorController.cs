@@ -1,6 +1,9 @@
-﻿using Agenda_Consultorio_Odontologico.model;
+﻿using Agenda_Consultorio_Odontologico.data;
+using Agenda_Consultorio_Odontologico.model;
 using Agenda_Consultorio_Odontologico.view.patientInterface;
+using Microsoft.EntityFrameworkCore;
 using System;
+using System.Globalization;
 
 namespace Agenda_Consultorio_Odontologico.controller.patientControllers
 {
@@ -124,12 +127,33 @@ namespace Agenda_Consultorio_Odontologico.controller.patientControllers
         // CPF existente
         private bool IsCPFAlreadyExistent(string cpf)
         {
-            return true;//...
+            var cpfLong = long.Parse(cpf);
+            using var context = new ConsultorioContext();
+            var p = context.Patients.First(p => p.CPF == cpfLong);
+            
+            return p != null;
         }
         // Data de Nascimento
         private bool IsBirthDate(string birthDate)
         {
-            return true;//...
+            string format = "dd/MM/yyyy";
+            DateTime DataFormatada;
+            int AnoAtual, AnoNascimento;
+
+            try
+            {
+                DataFormatada = DateTime.ParseExact(birthDate, format, CultureInfo.InvariantCulture);
+
+            }
+            catch (Exception) { return false; }
+
+            DateTime now = DateTime.Now;
+            AnoAtual = now.Year;
+            AnoNascimento = DataFormatada.Year;
+
+            if (AnoAtual - AnoNascimento <= 12) return false;
+
+            return true;
         }
     }
 }

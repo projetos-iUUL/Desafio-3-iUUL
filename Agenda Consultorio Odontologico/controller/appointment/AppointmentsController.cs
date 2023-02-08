@@ -7,25 +7,28 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
 {
     public class AppointmentsController
     {
-        AppointmentsPrint ali = new();
-        AppointmentsMenu almi = new();
-        DateTime start;
-        DateTime end;
-        bool hasConflit = false;
+        public DateTime Start { get; set; }
+        public DateTime End { get; set; }
+        public bool HasConflit { get; set; }
 
-        public AppointmentsController() { }
+        public AppointmentsController()
+        {
+            HasConflit = false;
+        }
 
 
         public void PrintSchedule()
         {
-            ali.Title();
-            ali.Header();
+            AppointmentsPrint appointmentsPrint = new();
+            appointmentsPrint.Header();
+
             using var context = new ConsultorioContext();
             var query = from app in context.Appointments
                         join pac in context.Patients
                         on app.PatientId equals pac.Id
                         orderby app.Date
                         select new { app, pac };
+
             foreach (var item in query)
             {
                 string date = item.app.Date.ToString("dd/MM/yyyy");
@@ -34,24 +37,26 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
                 string time = item.app.Time.ToString();
                 string name = item.app.Patient.Name;
                 string birth = item.app.Patient.BirthDate.ToString("dd/MM/yyyy");
-                ali.ShowAppointmentsList(date, itemStart, itemEnd, time, name, birth);                
+                appointmentsPrint.ShowAppointmentsList(date, itemStart, itemEnd, time, name, birth);                
             }
-            ali.Footer();
+
+            appointmentsPrint.Footer();
         }
         public void PrintScheduleByPeriod()
         {
-            almi.GetDates();
+            AppointmentsMenu appointmentsMenu = new();
+            AppointmentsPrint appointmentsPrint = new();
+            appointmentsMenu.GetDates();
             CheckDates();
             CheckDatesOrder();
-            if (!hasConflit)
+            if (!HasConflit)
             {
-                ali.Title();
-                ali.Header();
+                appointmentsPrint.Header();
                 using var context = new ConsultorioContext();
                 var query = from app in context.Appointments
                             join pac in context.Patients
                             on app.PatientId equals pac.Id
-                            where app.Date >= start && app.Date >= end
+                            where app.Date >= Start && app.Date >= End
                             orderby app.Date
                             select new { app, pac };
                 foreach (var item in query)
@@ -62,34 +67,36 @@ namespace Agenda_Consultorio_Odontologico.controller.appointment
                     string time = item.app.Time.ToString();
                     string name = item.app.Patient.Name;
                     string birth = item.app.Patient.BirthDate.ToString("dd/MM/yyyy");
-                    ali.ShowAppointmentsList(date, start, end, time, name, birth);
+                    appointmentsPrint.ShowAppointmentsList(date, start, end, time, name, birth);
                 }
-                ali.Footer();
+                appointmentsPrint.Footer();
             }
         }
         public void CheckDates()
         {
-            bool parseSuccessStart = DateTime.TryParse(almi.InputStartDate, out DateTime outputStartDate);
-            bool parseSuccessEnd = DateTime.TryParse(almi.InputEndDate, out DateTime outputEndDate);
+            AppointmentsMenu appointmentsMenu = new();
+            bool parseSuccessStart = DateTime.TryParse(appointmentsMenu.InputStartDate, out DateTime outputStartDate);
+            bool parseSuccessEnd = DateTime.TryParse(appointmentsMenu.InputEndDate, out DateTime outputEndDate);
             if (!parseSuccessStart)
             {
-                almi.ErrorMessages(1);
-                hasConflit = true;
+                appointmentsMenu.ErrorMessages(1);
+                HasConflit = true;
             }
-            else start = outputStartDate;
+            else Start = outputStartDate;
             if (!parseSuccessEnd)
             {
-                almi.ErrorMessages(2);
-                hasConflit = true;
+                appointmentsMenu.ErrorMessages(2);
+                HasConflit = true;
             }
-            else end = outputEndDate;
+            else End = outputEndDate;
         }
         public void CheckDatesOrder()
         {
-            if (start > end)
+            AppointmentsMenu appointmentsMenu = new();
+            if (Start > End)
             {
-                almi.ErrorMessages(3);
-                hasConflit = true;
+                appointmentsMenu.ErrorMessages(3);
+                HasConflit = true;
             }
         }
     }
